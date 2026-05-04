@@ -37,15 +37,16 @@ def add_task(title, priority="medium", due=None):
     print(f"Added task #{task['id']}: {title}")
 
 
-def complete_task(task_id):
+def complete_task(*task_ids):
     tasks = load_tasks()
-    for task in tasks:
-        if task["id"] == task_id:
-            task["done"] = True
-            save_tasks(tasks)
+    id_to_task = {t["id"]: t for t in tasks}
+    for task_id in task_ids:
+        if task_id in id_to_task:
+            id_to_task[task_id]["done"] = True
             print(f"Task #{task_id} marked as done.")
-            return
-    print(f"Task #{task_id} not found.")
+        else:
+            print(f"Task #{task_id} not found.")
+    save_tasks(tasks)
 
 
 def delete_task(task_id):
@@ -95,7 +96,7 @@ def main():
     args = sys.argv[1:]
     if not args:
         print("Commands: add <title> [priority] [due YYYY-MM-DD]")
-        print("          complete <id>")
+        print("          complete <id> [id2]")
         print("          delete <id>")
         print("          list [done|pending] [priority]")
         print("          overdue")
@@ -113,7 +114,10 @@ def main():
         add_task(title, priority, due)
 
     elif cmd == "complete":
-        complete_task(int(args[1]))
+        if len(args) < 2:
+            print("Usage: complete <id> [id2]")
+            return
+        complete_task(*[int(a) for a in args[1:]])
 
     elif cmd == "delete":
         delete_task(int(args[1]))
