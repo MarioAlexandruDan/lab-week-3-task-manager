@@ -50,8 +50,11 @@ def complete_task(task_id):
 
 def delete_task(task_id):
     tasks = load_tasks()
-    tasks = [t for t in tasks if t["id"] != task_id]
-    save_tasks(tasks)
+    filtered = [t for t in tasks if t["id"] != task_id]
+    if len(filtered) == len(tasks):
+        print(f"Task #{task_id} not found.")
+        return
+    save_tasks(filtered)
     print(f"Deleted task #{task_id}.")
 
 
