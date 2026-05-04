@@ -39,9 +39,13 @@ def add_task(title, priority="medium", due=None):
 
 def complete_task(task_id):
     tasks = load_tasks()
-    tasks[task_id]["done"] = True
-    save_tasks(tasks)
-    print(f"Task #{task_id} marked as done.")
+    for task in tasks:
+        if task["id"] == task_id:
+            task["done"] = True
+            save_tasks(tasks)
+            print(f"Task #{task_id} marked as done.")
+            return
+    print(f"Task #{task_id} not found.")
 
 
 def delete_task(task_id):
